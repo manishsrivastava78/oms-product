@@ -57,7 +57,7 @@ public class ProductDaoService {
 		RestTemplate restTemplate = new RestTemplate();
 		for(Product product : products) {
 			String fooResourceUrl
-			  = "http://oms-inventory.app.svc.cluster.local:8080/apis/v1/inventories/products/"+product.getProductid();
+			  = "http://oms-inventory-svc.app.svc.cluster.local:8080/apis/v1/inventories/products/"+product.getProductid();
 			try {
 			ResponseEntity<Inventory> response
 			  = restTemplate.getForEntity(fooResourceUrl , Inventory.class);
