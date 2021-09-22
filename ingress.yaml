@@ -21,7 +21,7 @@ spec:
             pathType: Prefix 
             backend:
               service:
-                name: oms-svc
+                name: oms-customer-svc
                 port: 
                   number: 8080
           - path: /apis/v1/products

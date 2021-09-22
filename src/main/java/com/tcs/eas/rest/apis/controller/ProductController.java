@@ -62,7 +62,7 @@ public class ProductController {
 
 	@GetMapping("/products")
 	public ResponseEntity<List<Product>> getProducts(@RequestHeader Map<String, String> headers) {
-		List<Product> products = productDaoService.findAll();
+		List<Product> products = productDaoService.findAll(headers.get("x-admin-key"));
 		loggingService.writeProcessLog("GET", "products", "getProduct", products);
 		return ResponseEntity.ok().headers(Utility.getCustomResponseHeaders(headers)).body(products);
 	}

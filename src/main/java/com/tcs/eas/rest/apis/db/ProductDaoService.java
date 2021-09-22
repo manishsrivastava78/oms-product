@@ -26,7 +26,6 @@ public class ProductDaoService {
 
 	@Autowired
 	LoggingService loggingService;
-	
 
 	/**
 	 * 
@@ -34,55 +33,45 @@ public class ProductDaoService {
 	 * @return
 	 */
 	public Product save(Product product) {
-		//Address address = customer.getAddress();
-		//Address addressEntity = new AddressEntity(address.getStreet(), address.getCity(), address.getPostcode(), address.getState(), address.getCountry());
-		//Customer customer = new Customer(customer.getFirstname(),customer.getLastname(),customer.getMobile(),customer.getEmail(),addressEntity);
+		// Address address = customer.getAddress();
+		// Address addressEntity = new AddressEntity(address.getStreet(),
+		// address.getCity(), address.getPostcode(), address.getState(),
+		// address.getCountry());
+		// Customer customer = new
+		// Customer(customer.getFirstname(),customer.getLastname(),customer.getMobile(),customer.getEmail(),addressEntity);
 		productRepository.save(product);
 		return product;
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	public List<Product> findAll(){
-		//get list
-		//loop
-		//for each invev.../productid
-		//list-remove
-		//return
+	public List<Product> findAll(String key) {
 		List<Product> productDetails = new ArrayList<Product>();
-		
+		String adminKey = "abc123";
 		List<Product> products = productRepository.findAll();
-		RestTemplate restTemplate = new RestTemplate();
-		for(Product product : products) {
-			String fooResourceUrl
-			  = "http://oms-inventory-svc.app.svc.cluster.local:8080/apis/v1/inventories/products/"+product.getProductid();
-			try {
-			ResponseEntity<Inventory> response
-			  = restTemplate.getForEntity(fooResourceUrl , Inventory.class);
-			Inventory inventory = response.getBody();
-			if(inventory.getAvailablequantity() > inventory.getMinquantity()) {
-				productDetails.add(product);
-			}}catch (Exception e) {
-				loggingService.logError(e.getMessage());
+		if (key == null || !key.equals(adminKey)) {
+			RestTemplate restTemplate = new RestTemplate();
+			for (Product product : products) {
+				String fooResourceUrl = "http://oms-inventory-svc.app.svc.cluster.local:8080/apis/v1/inventories/products/"
+						+ product.getProductid();
+				try {
+					ResponseEntity<Inventory> response = restTemplate.getForEntity(fooResourceUrl, Inventory.class);
+					Inventory inventory = response.getBody();
+					if (inventory.getAvailablequantity() > inventory.getMinquantity()) {
+						productDetails.add(product);
+					}
+				} catch (Exception e) {
+					loggingService.logError(e.getMessage());
+				}
 			}
-			
+			return productDetails;
+		} else {
+			return products;
 		}
-		
-		
-		/*
-		 * String fooResourceUrl =
-		 * "http://localhost:8082/apis/v1/inventories/products/4";
-		 * ResponseEntity<Inventory> response = restTemplate.getForEntity(fooResourceUrl
-		 * , Inventory.class); Inventory i = response.getBody();
-		 * System.out.println(i.getAvailablequantity());
-		 */
-		/*
-		 * for(Product product : products) { //api... if(true) { products.rem } }
-		 */
-		return productDetails;
 	}
+
 	/**
 	 * 
 	 * @param id
@@ -90,8 +79,8 @@ public class ProductDaoService {
 	 */
 	public Product getProductById(Integer id) {
 		Optional<Product> optional = productRepository.findById(id);
-		if(optional.isPresent())
-			return  optional.get();
+		if (optional.isPresent())
+			return optional.get();
 		else {
 			return null;
 		}
